@@ -23,7 +23,7 @@ export class User {
   })
   role: Role
 
-  @Column({ unique: true })
+  @Column({ nullable: true })
   refresh_token: string
 
   @CreateDateColumn()

@@ -24,6 +24,10 @@ export class UsersService {
     }
   }
 
+  async findUserByOAuthId(oauth_id: string) {
+    return this.usersService.findOne({ where: { oauth_id } })
+  }
+
   async findUserByEmail(email: string) {
     return this.usersService.findOne({ where: { email } })
   }

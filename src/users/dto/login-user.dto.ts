@@ -1,5 +1,6 @@
 export class LoginUserDto {
   username: string
-  email: string
+  email?: string
+  oauth_id: string
   avatar: string
 }

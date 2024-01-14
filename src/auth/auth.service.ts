@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { JwtService } from '@nestjs/jwt'
 import { Role } from 'common/enums/users.enum'
+import { User } from 'database/entities/user.entity'
 import { LoginUserDto } from 'src/users/dto/login-user.dto'
 import { UsersService } from 'src/users/users.service'
 
@@ -19,23 +20,33 @@ export class AuthService {
 
     // Save refresh_token in DB
     await this.usersService.updateUser({ id: newUser.id, refresh_token })
+
+    return { access_token, refresh_token }
   }
 
-  async googleLogin(user: LoginUserDto) {
+  async login(userExist: User) {
+    const { access_token, refresh_token } = await this.signAccessAndRefreshToken({
+      id: userExist.id,
+      role: userExist.role
+    })
+
+    // Update refresh_token in DB
+    await this.usersService.updateUser({ id: userExist.id, refresh_token })
+
+    return { access_token, refresh_token }
+  }
+
+  async oauthLogin(user: LoginUserDto) {
     if (!user) {
-      throw new NotFoundException('No user from google')
+      throw new NotFoundException('No user from third-party')
     }
 
-    const userExist = await this.usersService.findUserByEmail(user.email)
-
+    const userExist = await this.usersService.findUserByOAuthId(user.oauth_id)
     if (!userExist) {
-      await this.register(user)
+      return this.register(user)
     }
 
-    return {
-      message: 'User information from google',
-      user: user
-    }
+    return this.login(userExist)
   }
 
   async signAccessToken(payload: { id: string; role: Role }) {

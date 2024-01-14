@@ -11,9 +11,16 @@ export class User {
 
   @Column()
   @Index({ unique: true })
+  oauth_id: string
+
+  @Column({
+    nullable: true
+  })
   email: string
 
-  @Column()
+  @Column({
+    type: 'longtext'
+  })
   avatar: string
 
   @Column({

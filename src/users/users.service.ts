@@ -24,6 +24,10 @@ export class UsersService {
     }
   }
 
+  async findUserById(id: string) {
+    return this.usersService.findOne({ where: { id } })
+  }
+
   async findUserByOAuthId(oauth_id: string) {
     return this.usersService.findOne({ where: { oauth_id } })
   }

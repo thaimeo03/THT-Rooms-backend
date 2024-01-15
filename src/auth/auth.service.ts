@@ -49,18 +49,35 @@ export class AuthService {
     return this.login(userExist)
   }
 
+  async refreshToken(payload: { id: string; refresh_token: string }) {
+    const userExist = await this.usersService.findUserById(payload.id)
+    if (!userExist) {
+      throw new NotFoundException()
+    }
+
+    const access_token = await this.signAccessToken({ id: userExist.id, role: userExist.role })
+
+    return access_token
+  }
+
   async signAccessToken(payload: { id: string; role: Role }) {
-    return await this.jwtService.signAsync(payload, {
-      secret: this.configService.get('JWT_SECRET_ACCESS_TOKEN'),
-      expiresIn: this.configService.get('JWT_EXPIRES_IN_ACCESS_TOKEN')
-    })
+    return await this.jwtService.signAsync(
+      { ...payload, type: 'ACCESS_TOKEN' },
+      {
+        secret: this.configService.get('JWT_SECRET_ACCESS_TOKEN'),
+        expiresIn: this.configService.get('JWT_EXPIRES_IN_ACCESS_TOKEN')
+      }
+    )
   }
 
   async signRefreshToken(payload: { id: string; role: Role }) {
-    return await this.jwtService.signAsync(payload, {
-      secret: this.configService.get('JWT_SECRET_REFRESH_TOKEN'),
-      expiresIn: this.configService.get('JWT_EXPIRES_IN_REFRESH_TOKEN')
-    })
+    return await this.jwtService.signAsync(
+      { ...payload, type: 'REFRESH_TOKEN' },
+      {
+        secret: this.configService.get('JWT_SECRET_REFRESH_TOKEN'),
+        expiresIn: this.configService.get('JWT_EXPIRES_IN_REFRESH_TOKEN')
+      }
+    )
   }
 
   async signAccessAndRefreshToken(payload: { id: string; role: Role }) {

@@ -3,14 +3,14 @@ import { TokenExpiredError } from '@nestjs/jwt'
 import { AuthGuard } from '@nestjs/passport'
 
 @Injectable()
-export class JwtAuthGuard extends AuthGuard('jwt') {
-  handleRequest(err, user, info: Error) {
-    if (info instanceof TokenExpiredError) {
-      // do stuff when token is expired
-      console.log('token expired')
-    } else if (err) {
+export class JwtAuthGuard extends AuthGuard(['access_token', 'refresh_token']) {
+  handleRequest(err, payload, info: Error) {
+    if (err) {
       throw err || new UnauthorizedException()
     }
-    return user
+
+    console.log(payload)
+
+    return payload
   }
 }

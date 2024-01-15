@@ -5,26 +5,27 @@ import { Request } from 'express'
 import 'dotenv/config'
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy, 'access_token') {
+export class RefreshTokenStrategy extends PassportStrategy(Strategy, 'refresh_token') {
   constructor() {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
-        JwtStrategy.extractJwtFromCookie,
+        RefreshTokenStrategy.extractRefreshTokenFromCookie,
         ExtractJwt.fromAuthHeaderAsBearerToken()
       ]),
       ignoreExpiration: false,
-      secretOrKey: process.env.JWT_SECRET_ACCESS_TOKEN
+      secretOrKey: process.env.JWT_SECRET_REFRESH_TOKEN
     })
   }
 
-  private static extractJwtFromCookie(req: Request) {
-    if (req.cookies && 'access_token' in req.cookies) {
-      return req.cookies.access_token
+  private static extractRefreshTokenFromCookie(req: Request) {
+    if (req.cookies && 'refresh_token' in req.cookies) {
+      return req.cookies.refresh_token
     }
+
     return null
   }
 
   async validate(payload: any) {
-    return { id: payload.id, role: payload.role }
+    return payload
   }
 }

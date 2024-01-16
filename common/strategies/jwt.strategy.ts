@@ -4,6 +4,14 @@ import { ExtractJwt, Strategy } from 'passport-jwt'
 import { Request } from 'express'
 import 'dotenv/config'
 
+export interface IJwtPayload {
+  id: string
+  role: string
+  type: string
+  iat: number
+  exp: number
+}
+
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor() {
@@ -24,7 +32,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     return null
   }
 
-  validate(payload: any) {
+  validate(payload: IJwtPayload) {
     return payload
   }
 }

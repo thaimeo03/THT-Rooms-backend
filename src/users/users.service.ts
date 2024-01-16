@@ -24,6 +24,10 @@ export class UsersService {
     }
   }
 
+  async updateUserById({ id, payload }: { id: string; payload: Partial<User> }) {
+    return this.usersService.update(id, payload)
+  }
+
   async findUserById(id: string) {
     return this.usersService.findOne({ where: { id } })
   }

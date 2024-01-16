@@ -3,6 +3,12 @@ import { PassportStrategy } from '@nestjs/passport'
 import { ExtractJwt, Strategy } from 'passport-jwt'
 import { Request } from 'express'
 import 'dotenv/config'
+import { IJwtPayload } from './jwt.strategy'
+
+export interface IRefreshTokenPayload {
+  payload: IJwtPayload
+  refreshToken: string
+}
 
 @Injectable()
 export class RefreshTokenStrategy extends PassportStrategy(Strategy, 'refresh_token') {
@@ -30,7 +36,7 @@ export class RefreshTokenStrategy extends PassportStrategy(Strategy, 'refresh_to
     const user = {
       payload,
       refreshToken: req.cookies.refresh_token
-    }
+    } as IRefreshTokenPayload
 
     return user
   }

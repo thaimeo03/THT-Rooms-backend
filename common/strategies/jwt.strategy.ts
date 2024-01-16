@@ -5,7 +5,7 @@ import { Request } from 'express'
 import 'dotenv/config'
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy, 'access_token') {
+export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor() {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
@@ -24,7 +24,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'access_token') {
     return null
   }
 
-  async validate(payload: any) {
-    return { id: payload.id, role: payload.role }
+  validate(payload: any) {
+    return payload
   }
 }

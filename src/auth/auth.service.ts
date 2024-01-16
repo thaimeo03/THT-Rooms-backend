@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { JwtService } from '@nestjs/jwt'
 import { Role } from 'common/enums/users.enum'
@@ -51,8 +51,13 @@ export class AuthService {
 
   async refreshToken(payload: { id: string; refresh_token: string }) {
     const userExist = await this.usersService.findUserById(payload.id)
+
     if (!userExist) {
       throw new NotFoundException()
+    }
+
+    if (userExist.refresh_token !== payload.refresh_token) {
+      throw new UnauthorizedException()
     }
 
     const access_token = await this.signAccessToken({ id: userExist.id, role: userExist.role })

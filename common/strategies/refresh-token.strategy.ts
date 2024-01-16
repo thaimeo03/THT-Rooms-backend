@@ -13,7 +13,8 @@ export class RefreshTokenStrategy extends PassportStrategy(Strategy, 'refresh_to
         ExtractJwt.fromAuthHeaderAsBearerToken()
       ]),
       ignoreExpiration: false,
-      secretOrKey: process.env.JWT_SECRET_REFRESH_TOKEN
+      secretOrKey: process.env.JWT_SECRET_REFRESH_TOKEN,
+      passReqToCallback: true
     })
   }
 
@@ -25,7 +26,12 @@ export class RefreshTokenStrategy extends PassportStrategy(Strategy, 'refresh_to
     return null
   }
 
-  async validate(payload: any) {
-    return payload
+  validate(req: Request, payload: any) {
+    const user = {
+      payload,
+      refreshToken: req.cookies.refresh_token
+    }
+
+    return user
   }
 }

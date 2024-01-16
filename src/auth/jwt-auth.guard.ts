@@ -1,16 +1,33 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common'
-import { TokenExpiredError } from '@nestjs/jwt'
+import { ExecutionContext, ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common'
+import { Reflector } from '@nestjs/core'
 import { AuthGuard } from '@nestjs/passport'
+import { ROLES_KEY } from 'common/decorators/roles.decorator'
+import { Role } from 'common/enums/users.enum'
 
 @Injectable()
-export class JwtAuthGuard extends AuthGuard(['access_token', 'refresh_token']) {
-  handleRequest(err, payload, info: Error) {
-    if (err) {
+export class JwtAuthGuard extends AuthGuard('jwt') {
+  constructor(private reflector: Reflector) {
+    super()
+  }
+
+  handleRequest(err, user, info, context: ExecutionContext) {
+    if (err || !user) {
       throw err || new UnauthorizedException()
     }
 
-    console.log(payload)
+    const requiredRoles = this.reflector.getAllAndOverride<Role[]>(ROLES_KEY, [
+      context.getHandler(),
+      context.getClass()
+    ])
 
-    return payload
+    if (!requiredRoles) {
+      return user
+    }
+
+    if (!requiredRoles.some((role) => user.role === role)) {
+      throw new ForbiddenException()
+    }
+
+    return user
   }
 }

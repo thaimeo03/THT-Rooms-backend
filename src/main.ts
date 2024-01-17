@@ -7,8 +7,11 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule)
   const configService = app.get(ConfigService)
 
+  app.enableCors({
+    credentials: true,
+    origin: configService.get('CLIENT_URL')
+  })
   app.use(cookieParser())
-  app.enableCors()
   await app.listen(configService.get('PORT'))
 }
 bootstrap()

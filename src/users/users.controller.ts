@@ -29,4 +29,14 @@ export class UsersController {
 
     return new ResponseData({ message: 'Logout success' })
   }
+
+  @Get('/profile')
+  @UseGuards(JwtAuthGuard)
+  async getProfile(@Req() req: Request) {
+    const user = req.user as IJwtPayload
+
+    const res = await this.usersService.getProfile(user.id)
+
+    return new ResponseData({ message: 'Get profile success', data: res })
+  }
 }

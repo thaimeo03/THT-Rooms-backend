@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { User } from 'database/entities/user.entity'
-import { Repository } from 'typeorm'
+import { FindOptionsSelect, Repository } from 'typeorm'
 import { LoginUserDto } from './dto/login-user.dto'
 
 @Injectable()
@@ -24,12 +24,26 @@ export class UsersService {
     }
   }
 
+  async getProfile(id: string) {
+    return this.findUserById(id, {
+      id: true,
+      username: true,
+      email: true,
+      avatar: true,
+      updated_at: true,
+      role: true
+    })
+  }
+
   async updateUserById({ id, payload }: { id: string; payload: Partial<User> }) {
     return this.usersService.update(id, payload)
   }
 
-  async findUserById(id: string) {
-    return this.usersService.findOne({ where: { id } })
+  async findUserById(id: string, select?: FindOptionsSelect<User>) {
+    return this.usersService.findOne({
+      where: { id },
+      select: select
+    })
   }
 
   async findUserByOAuthId(oauth_id: string) {

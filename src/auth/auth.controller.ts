@@ -7,10 +7,14 @@ import { FacebookGuard } from './facebook.guard'
 import { RefreshTokenAuthGuard } from './refresh-token.guard'
 import { ResponseData } from 'common/customs/response-data'
 import { IRefreshTokenPayload } from 'common/strategies/refresh-token.strategy'
+import { ConfigService } from '@nestjs/config'
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly configService: ConfigService
+  ) {}
 
   @Get('google')
   @UseGuards(GoogleGuard)
@@ -29,7 +33,7 @@ export class AuthController {
       httpOnly: true
     })
 
-    return new ResponseData({ message: 'Login success' }) // Change to redirect to local
+    return res.redirect(this.configService.get('CLIENT_URL'))
   }
 
   @Get('facebook')
@@ -49,7 +53,7 @@ export class AuthController {
       httpOnly: true
     })
 
-    return new ResponseData({ message: 'Login success' }) // Change to redirect to local
+    return res.redirect(this.configService.get('CLIENT_URL'))
   }
 
   @Get('refresh-token')

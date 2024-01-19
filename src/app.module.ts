@@ -4,6 +4,7 @@ import { UsersModule } from './users/users.module'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { dataSourceOptions } from 'database/data-source'
 import { AuthModule } from './auth/auth.module'
+import { RoomsModule } from './rooms/rooms.module';
 
 @Module({
   imports: [
@@ -12,7 +13,8 @@ import { AuthModule } from './auth/auth.module'
       isGlobal: true
     }),
     AuthModule,
-    UsersModule
+    UsersModule,
+    RoomsModule
   ],
   controllers: [],
   providers: []

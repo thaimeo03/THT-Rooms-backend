@@ -1,5 +1,6 @@
 import { Role } from 'common/enums/users.enum'
-import { Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
+import { Column, CreateDateColumn, Entity, Index, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
+import { Room } from './room.entity'
 
 @Entity()
 export class User {
@@ -38,4 +39,7 @@ export class User {
 
   @UpdateDateColumn()
   updated_at: Date
+
+  @ManyToOne(() => User, (user) => user.room)
+  room: Room
 }

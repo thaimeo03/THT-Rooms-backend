@@ -7,7 +7,7 @@ export class Room {
   id: string
 
   @Column()
-  username: string
+  name: string
 
   @Column()
   color: string

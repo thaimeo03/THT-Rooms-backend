@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { User } from 'database/entities/user.entity'
 import { FindOptionsSelect, Repository } from 'typeorm'
 import { LoginUserDto } from './dto/login-user.dto'
-import { UpdateRoleDto } from 'src/rooms/dto/update-role.dto'
+import { UpdateRoleDto } from 'src/users/dto/update-role.dto'
 
 @Injectable()
 export class UsersService {
@@ -23,10 +23,6 @@ export class UsersService {
     } catch (error) {
       throw error
     }
-  }
-
-  async updateRole({ id, updateRoleDto }: { id: string; updateRoleDto: UpdateRoleDto }) {
-    await this.usersService.update(id, updateRoleDto)
   }
 
   async getProfile(id: string) {

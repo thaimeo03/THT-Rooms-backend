@@ -6,7 +6,8 @@ import { Request, Response } from 'express'
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard'
 import { UsersService } from './users.service'
 import { ResponseData } from 'common/customs/response-data'
-import { UpdateRoleDto } from 'src/rooms/dto/update-role.dto'
+import { UpdateRoleDto } from 'src/users/dto/update-role.dto'
+import { pick } from 'lodash'
 
 @Controller('users')
 export class UsersController {
@@ -41,13 +42,13 @@ export class UsersController {
     return new ResponseData({ message: 'Get profile success', data: res })
   }
 
-  @Patch('role')
-  @UseGuards(JwtAuthGuard)
-  @Roles(Role.HOST, Role.USER)
-  async updateRole(@Req() req: Request, @Body() updateRoleDto: UpdateRoleDto) {
-    const user = req.user as IJwtPayload
-    await this.usersService.updateRole({ id: user.id, updateRoleDto })
+  // @Patch('role')
+  // @UseGuards(JwtAuthGuard)
+  // @Roles(Role.HOST, Role.USER)
+  // async updateRole(@Req() req: Request, @Body() updateRoleDto: UpdateRoleDto) {
+  //   const user = req.user as IJwtPayload
+  //   await this.usersService.updateRole({ id: user.id, updateRoleDto: pick(updateRoleDto, ['role']) })
 
-    return new ResponseData({ message: 'Update role success' })
-  }
+  //   return new ResponseData({ message: 'Update role success' })
+  // }
 }

@@ -3,10 +3,11 @@ import { PassportStrategy } from '@nestjs/passport'
 import { ExtractJwt, Strategy } from 'passport-jwt'
 import { Request } from 'express'
 import 'dotenv/config'
+import { Role } from 'common/enums/users.enum'
 
 export interface IJwtPayload {
   id: string
-  role: string
+  role: Role
   type: string
   iat: number
   exp: number

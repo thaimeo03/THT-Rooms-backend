@@ -1,6 +1,5 @@
-import { IsIn, IsNotEmpty, IsNotEmptyObject } from 'class-validator'
+import { IsIn, IsNotEmpty } from 'class-validator'
 import { Role } from 'common/enums/users.enum'
-import { PartialType } from '@nestjs/mapped-types'
 
 export class UpdateRoleDto {
   @IsNotEmpty()

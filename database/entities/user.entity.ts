@@ -40,6 +40,6 @@ export class User {
   @UpdateDateColumn()
   updated_at: Date
 
-  @ManyToOne(() => User, (user) => user.room)
+  @ManyToOne(() => Room, (room) => room.users)
   room: Room
 }

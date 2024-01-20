@@ -7,6 +7,7 @@ import { IJwtPayload } from 'common/strategies/jwt.strategy'
 import { CreateRoomDto } from './dto/create-room.dto'
 import { RoomsService } from './rooms.service'
 import { ResponseData } from 'common/customs/response-data'
+import { JoinRoomDto } from './dto/join-room.dto'
 
 @Controller('rooms')
 export class RoomsController {
@@ -26,4 +27,25 @@ export class RoomsController {
 
     return new ResponseData({ message: 'Create room success', data: room })
   }
+
+  @Post('join')
+  @UseGuards(JwtAuthGuard)
+  @Roles(Role.HOST, Role.USER)
+  async joinRoom(@Req() req: Request, @Body() joinRoomDto: JoinRoomDto) {
+    const user = req.user as IJwtPayload
+
+    await this.roomsService.joinRoom({
+      userId: user.id,
+      joinRoomDto
+    })
+
+    return new ResponseData({ message: 'Join room success' })
+  }
+
+  // @Post('leave')
+  // @UseGuards(JwtAuthGuard)
+  // @Roles(Role.HOST, Role.USER)
+  // async leaveRoom(@Req() req: Request) {
+  //   // const user = req.user as IJwtPayload
+  // }
 }

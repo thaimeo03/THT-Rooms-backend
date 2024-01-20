@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Room } from 'database/entities/room.entity'
 import { Repository } from 'typeorm'
 import { CreateRoomDto } from './dto/create-room.dto'
 import { Role } from 'common/enums/users.enum'
 import { UsersService } from 'src/users/users.service'
+import { JoinRoomDto } from './dto/join-room.dto'
 
 @Injectable()
 export class RoomsService {
@@ -32,9 +33,30 @@ export class RoomsService {
           }
         })
       }
-      return this.roomsService.save({
+      // Save room
+      const room = await this.roomsService.save({
         ...createRoomDto,
         host_user_id: userId
+      })
+
+      return room
+    } catch (error) {
+      throw error
+    }
+  }
+
+  async joinRoom({ userId, joinRoomDto }: { userId: string; joinRoomDto: JoinRoomDto }) {
+    try {
+      // Check room exists
+      const room = await this.roomsService.findOneBy({ id: joinRoomDto.room_id })
+      if (!room) throw new NotFoundException('Room not found')
+
+      // Update relationship
+      await this.usersService.updateUserById({
+        id: userId,
+        payload: {
+          room: room
+        }
       })
     } catch (error) {
       throw error

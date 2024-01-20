@@ -6,8 +6,6 @@ import { Request, Response } from 'express'
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard'
 import { UsersService } from './users.service'
 import { ResponseData } from 'common/customs/response-data'
-import { UpdateRoleDto } from 'src/users/dto/update-role.dto'
-import { pick } from 'lodash'
 
 @Controller('users')
 export class UsersController {

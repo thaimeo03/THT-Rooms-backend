@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common'
+import { Body, Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common'
 import { Roles } from 'common/decorators/roles.decorator'
 import { Role } from 'common/enums/users.enum'
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard'
@@ -15,7 +15,7 @@ export class RoomsController {
 
   @Post('create')
   @UseGuards(JwtAuthGuard)
-  @Roles(Role.HOST, Role.USER)
+  @Roles(Role.HOST)
   async createRoom(@Req() req: Request, @Body() createRoomDto: CreateRoomDto) {
     const user = req.user as IJwtPayload
 
@@ -33,7 +33,6 @@ export class RoomsController {
   @Roles(Role.HOST, Role.USER)
   async joinRoom(@Req() req: Request, @Body() joinRoomDto: JoinRoomDto) {
     const user = req.user as IJwtPayload
-
     await this.roomsService.joinRoom({
       userId: user.id,
       joinRoomDto
@@ -42,10 +41,20 @@ export class RoomsController {
     return new ResponseData({ message: 'Join room success' })
   }
 
+  @Get(':host_id')
+  @UseGuards(JwtAuthGuard)
+  async getRooms(@Param('host_id') hostId: string) {
+    const rooms = await this.roomsService.findRoomsByHostId(hostId)
+
+    return new ResponseData({ message: 'Get rooms success', data: rooms })
+  }
+
   // @Post('leave')
   // @UseGuards(JwtAuthGuard)
   // @Roles(Role.HOST, Role.USER)
   // async leaveRoom(@Req() req: Request) {
-  //   // const user = req.user as IJwtPayload
+  //   // Hard code
+  //   await this.roomsService.leaveRoom()
+  //   return new ResponseData({ message: 'Leave room success' })
   // }
 }

@@ -62,4 +62,28 @@ export class RoomsService {
       throw error
     }
   }
+
+  async leaveRoom() {
+    // Hardcode
+    try {
+      await Promise.all([
+        await this.usersService.updateUserById({
+          id: 'e78e491c-891c-46a4-89e1-3ac2a8c1d4cc',
+          payload: {
+            room: null
+          }
+        })
+      ])
+    } catch (error) {
+      throw error
+    }
+  }
+
+  async findRoomsByHostId(hostUserId: string) {
+    return this.roomsService.find({
+      where: {
+        host_user_id: hostUserId
+      }
+    })
+  }
 }

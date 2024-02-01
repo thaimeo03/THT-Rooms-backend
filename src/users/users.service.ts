@@ -1,13 +1,18 @@
-import { Injectable } from '@nestjs/common'
+import { Inject, Injectable, forwardRef } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { User } from 'database/entities/user.entity'
 import { FindOptionsSelect, Repository } from 'typeorm'
 import { LoginUserDto } from './dto/login-user.dto'
-import { UpdateRoleDto } from 'src/users/dto/update-role.dto'
+import { RoomsService } from 'src/rooms/rooms.service'
+import { Role } from 'common/enums/users.enum'
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectRepository(User) private readonly usersService: Repository<User>) {}
+  constructor(
+    @InjectRepository(User) private readonly usersService: Repository<User>,
+    @Inject(forwardRef(() => RoomsService))
+    private readonly roomsService: RoomsService
+  ) {}
 
   async createUser(user: LoginUserDto) {
     try {
@@ -34,6 +39,17 @@ export class UsersService {
       updated_at: true,
       role: true
     })
+  }
+
+  async leaveHost(id: string) {
+    try {
+      Promise.all([
+        await this.roomsService.deleteRoomsByHostId(id),
+        await this.updateUserById({ id, payload: { role: Role.USER } })
+      ])
+    } catch (error) {
+      throw error
+    }
   }
 
   async updateUserById({ id, payload }: { id: string; payload: Partial<User> }) {

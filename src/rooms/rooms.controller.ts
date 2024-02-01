@@ -15,7 +15,6 @@ export class RoomsController {
 
   @Post('create')
   @UseGuards(JwtAuthGuard)
-  @Roles(Role.HOST)
   async createRoom(@Req() req: Request, @Body() createRoomDto: CreateRoomDto) {
     const user = req.user as IJwtPayload
 
@@ -49,7 +48,7 @@ export class RoomsController {
     return new ResponseData({ message: 'Get rooms success', data: rooms })
   }
 
-  // @Post('leave')
+  // @Get('leave')
   // @UseGuards(JwtAuthGuard)
   // @Roles(Role.HOST, Role.USER)
   // async leaveRoom(@Req() req: Request) {

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import { Inject, Injectable, NotFoundException, forwardRef } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Room } from 'database/entities/room.entity'
 import { Repository } from 'typeorm'
@@ -11,6 +11,7 @@ import { JoinRoomDto } from './dto/join-room.dto'
 export class RoomsService {
   constructor(
     @InjectRepository(Room) private readonly roomsService: Repository<Room>,
+    @Inject(forwardRef(() => UsersService))
     private readonly usersService: UsersService
   ) {}
 
@@ -57,6 +58,16 @@ export class RoomsService {
         payload: {
           room: room
         }
+      })
+    } catch (error) {
+      throw error
+    }
+  }
+
+  async deleteRoomsByHostId(hostUserId: string) {
+    try {
+      await this.roomsService.delete({
+        host_user_id: hostUserId
       })
     } catch (error) {
       throw error

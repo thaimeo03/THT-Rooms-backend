@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Patch, Req, Res, UseGuards } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Patch, Req, Res, UseGuards } from '@nestjs/common'
 import { Roles } from 'common/decorators/roles.decorator'
 import { Role } from 'common/enums/users.enum'
 import { IJwtPayload } from 'common/strategies/jwt.strategy'
@@ -40,13 +40,13 @@ export class UsersController {
     return new ResponseData({ message: 'Get profile success', data: res })
   }
 
-  // @Patch('role')
-  // @UseGuards(JwtAuthGuard)
-  // @Roles(Role.HOST, Role.USER)
-  // async updateRole(@Req() req: Request, @Body() updateRoleDto: UpdateRoleDto) {
-  //   const user = req.user as IJwtPayload
-  //   await this.usersService.updateRole({ id: user.id, updateRoleDto: pick(updateRoleDto, ['role']) })
-
-  //   return new ResponseData({ message: 'Update role success' })
-  // }
+  // Handle later
+  @Delete('leave-host')
+  @UseGuards(JwtAuthGuard)
+  @Roles(Role.HOST)
+  async leaveHost(@Req() req: Request) {
+    const user = req.user as IJwtPayload
+    await this.usersService.leaveHost(user.id)
+    return new ResponseData({ message: 'Leave host success' })
+  }
 }

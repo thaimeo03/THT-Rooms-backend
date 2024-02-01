@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm'
 import { dataSourceOptions } from 'database/data-source'
 import { AuthModule } from './auth/auth.module'
 import { RoomsModule } from './rooms/rooms.module';
+import { VideoGroupGateway } from './video-group/video-group.gateway';
 
 @Module({
   imports: [
@@ -17,6 +18,6 @@ import { RoomsModule } from './rooms/rooms.module';
     RoomsModule
   ],
   controllers: [],
-  providers: []
+  providers: [VideoGroupGateway]
 })
 export class AppModule {}

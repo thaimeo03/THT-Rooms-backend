@@ -8,47 +8,53 @@ import {
 } from '@nestjs/websockets'
 import { Server, Socket } from 'socket.io'
 
+interface IPayLoad {
+  roomId: string
+  myPeerId: string
+}
+
 @WebSocketGateway({
   cors: {
     origin: '*'
   }
 })
 export class VideoGroupGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
+  private readonly visited = new Map<Socket, IPayLoad>()
+
   @WebSocketServer()
   server: Server
 
-  // constructor(private readonly ) {}
-
   @SubscribeMessage('join-room')
-  handleJoinRoom(client: Socket, payload: { roomId: string; myPeerId: string }) {
+  handleJoinRoom(client: Socket, payload: IPayLoad) {
     const { roomId, myPeerId } = payload
     console.log(`a new user ${myPeerId} joined room ${roomId}`)
 
-    // Handle join room
-    // ...
-    // End handle join room
+    this.visited.set(client, { roomId, myPeerId })
 
     client.join(roomId)
     client.broadcast.to(roomId).emit('user-connected', myPeerId)
   }
 
   @SubscribeMessage('user-toggle-audio')
-  handleToggleAudio(client: Socket, payload: { roomId: string; myPeerId: string }) {
+  handleToggleAudio(client: Socket, payload: IPayLoad) {
     const { roomId, myPeerId } = payload
     client.join(roomId)
     client.broadcast.to(roomId).emit('user-toggle-audio', myPeerId)
   }
 
   @SubscribeMessage('user-toggle-video')
-  handleToggleVideo(client: Socket, payload: { roomId: string; myPeerId: string }) {
+  handleToggleVideo(client: Socket, payload: IPayLoad) {
     const { roomId, myPeerId } = payload
     client.join(roomId)
     client.broadcast.to(roomId).emit('user-toggle-video', myPeerId)
   }
 
   @SubscribeMessage('user-leave')
-  handleLeaveRoom(client: Socket, payload: { roomId: string; myPeerId: string }) {
+  handleLeaveRoom(client: Socket, payload: IPayLoad) {
     const { roomId, myPeerId } = payload
+
+    this.visited.delete(client)
+
     client.join(roomId)
     client.broadcast.to(roomId).emit('user-leave', myPeerId)
   }
@@ -63,5 +69,13 @@ export class VideoGroupGateway implements OnGatewayInit, OnGatewayConnection, On
 
   handleDisconnect(client: Socket) {
     console.log(`Disconnected: ${client.id}`)
+
+    if (this.visited.has(client)) {
+      const { myPeerId, roomId } = this.visited.get(client)
+      this.handleLeaveRoom(client, {
+        myPeerId,
+        roomId
+      })
+    }
   }
 }

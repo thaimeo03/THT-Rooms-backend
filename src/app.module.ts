@@ -4,8 +4,10 @@ import { UsersModule } from './users/users.module'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { dataSourceOptions } from 'database/data-source'
 import { AuthModule } from './auth/auth.module'
-import { RoomsModule } from './rooms/rooms.module';
-import { VideoGroupGateway } from './video-group/video-group.gateway';
+import { RoomsModule } from './rooms/rooms.module'
+import { VideoGroupGateway } from './video-group/video-group.gateway'
+import { ChatGroupGateway } from './chat-group/chat-group.gateway'
+import { RoomGateway } from './room/room.gateway'
 
 @Module({
   imports: [
@@ -18,6 +20,6 @@ import { VideoGroupGateway } from './video-group/video-group.gateway';
     RoomsModule
   ],
   controllers: [],
-  providers: [VideoGroupGateway]
+  providers: [VideoGroupGateway, ChatGroupGateway, RoomGateway]
 })
 export class AppModule {}

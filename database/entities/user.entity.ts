@@ -1,6 +1,16 @@
 import { Role } from 'common/enums/users.enum'
-import { Column, CreateDateColumn, Entity, Index, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  Index,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn
+} from 'typeorm'
 import { Room } from './room.entity'
+import { Chat } from './chat.entity'
 
 @Entity()
 export class User {
@@ -42,4 +52,7 @@ export class User {
 
   @ManyToOne(() => Room, (room) => room.users)
   room: Room
+
+  @OneToMany(() => Chat, (chat) => chat.user)
+  chats: Chat
 }

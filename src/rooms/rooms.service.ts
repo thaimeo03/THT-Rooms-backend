@@ -97,4 +97,8 @@ export class RoomsService {
       }
     })
   }
+
+  async findRoomByUserId(userId: string) {
+    return this.roomsService.findOneBy({ users: { id: userId } })
+  }
 }

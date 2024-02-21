@@ -74,12 +74,11 @@ export class RoomsService {
     }
   }
 
-  async leaveRoom() {
-    // Hardcode
+  async leaveRoom(userId: string) {
     try {
       await Promise.all([
         await this.usersService.updateUserById({
-          id: 'e78e491c-891c-46a4-89e1-3ac2a8c1d4cc',
+          id: userId,
           payload: {
             room: null
           }

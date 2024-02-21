@@ -2,6 +2,7 @@ import { SubscribeMessage, WebSocketGateway } from '@nestjs/websockets'
 import { Socket } from 'socket.io'
 import { ChatsService } from 'src/chats/chats.service'
 import { RoomGateway } from 'src/room/room.gateway'
+import { RoomsService } from 'src/rooms/rooms.service'
 
 interface IMessage {
   userId: string
@@ -10,8 +11,11 @@ interface IMessage {
 
 @WebSocketGateway()
 export class ChatGroupGateway extends RoomGateway {
-  constructor(private readonly chatsService: ChatsService) {
-    super()
+  constructor(
+    private readonly chatsService: ChatsService,
+    public readonly roomsService: RoomsService
+  ) {
+    super(roomsService)
   }
 
   @SubscribeMessage('send-message')

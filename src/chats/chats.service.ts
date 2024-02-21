@@ -20,6 +20,7 @@ export class ChatsService {
     if (!user) throw new NotFoundException('User not found')
 
     // TODO: Check if user is in the room
+    console.log({ userId, createChatDto })
     const room = await this.roomsService.findRoomByUserId(userId)
     if (!room) throw new NotFoundException('User is not in a room')
 

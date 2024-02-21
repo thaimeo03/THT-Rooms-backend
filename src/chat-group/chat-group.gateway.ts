@@ -4,7 +4,8 @@ import { ChatsService } from 'src/chats/chats.service'
 import { RoomGateway } from 'src/room/room.gateway'
 
 interface IMessage {
-  text: string
+  userId: string
+  message: string
 }
 
 @WebSocketGateway()
@@ -14,8 +15,25 @@ export class ChatGroupGateway extends RoomGateway {
   }
 
   @SubscribeMessage('send-message')
-  handleSendMessage(client: Socket, payload: IMessage) {
+  async handleSendMessage(client: Socket, payload: IMessage) {
     const { roomId } = this.visited.get(client)
-    // Continue here
+    const { userId, message } = payload
+
+    const chat = await this.chatsService.createChat({
+      userId,
+      createChatDto: {
+        message
+      }
+    })
+
+    this.server.to(roomId).emit('receive-message', {
+      user: {
+        id: chat.user.id,
+        name: chat.user.username,
+        avatar: chat.user.avatar
+      },
+      message: chat.message,
+      created_at: chat.created_at
+    })
   }
 }

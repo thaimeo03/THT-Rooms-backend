@@ -26,9 +26,27 @@ export class ChatsService {
 
     const chat = await this.chatsService.save({
       ...createChatDto,
-      user: user
+      room,
+      user
     })
 
     return chat
+  }
+
+  async getAllChatsByRoomId(roomId: string) {
+    // Room exist and Need check user in a room
+    // const room = await this.roomsService.findRoom
+    // Join room -> user -> chat
+    const chats = await this.chatsService.find({
+      where: {
+        user: {
+          room: {
+            id: roomId
+          }
+        }
+      }
+    })
+
+    return chats
   }
 }

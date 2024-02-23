@@ -89,6 +89,8 @@ export class RoomsService {
     }
   }
 
+  // async findRoomById
+
   async findRoomsByHostId(hostUserId: string) {
     return this.roomsService.find({
       where: {

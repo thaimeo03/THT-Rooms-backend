@@ -20,7 +20,6 @@ export class ChatsService {
     if (!user) throw new NotFoundException('User not found')
 
     // TODO: Check if user is in the room
-    console.log({ userId, createChatDto })
     const room = await this.roomsService.findRoomByUserId(userId)
     if (!room) throw new NotFoundException('User is not in a room')
 
@@ -33,17 +32,38 @@ export class ChatsService {
     return chat
   }
 
-  async getAllChatsByRoomId(roomId: string) {
+  async getAllChats({ roomId, userId }: { roomId: string; userId: string }) {
     // Room exist and Need check user in a room
-    // const room = await this.roomsService.findRoom
+    const [room, roomByUser] = await Promise.all([
+      await this.roomsService.findRoomById(roomId),
+      await this.roomsService.findRoomByUserId(userId)
+    ])
+    if (!room || !roomByUser) throw new NotFoundException('Room not found')
+    if (room.id !== roomByUser.id) throw new NotFoundException('User is not in a room')
+
     // Join room -> user -> chat
     const chats = await this.chatsService.find({
-      where: {
+      select: {
+        id: true,
+        message: true,
         user: {
-          room: {
-            id: roomId
-          }
+          id: true,
+          username: true,
+          avatar: true,
+          role: true
+        },
+        created_at: true
+      },
+      where: {
+        room: {
+          id: roomId
+        },
+        user: {
+          id: userId
         }
+      },
+      relations: {
+        user: true
       }
     })
 

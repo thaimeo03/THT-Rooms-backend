@@ -31,10 +31,12 @@ export class ChatGroupGateway extends RoomGateway {
     })
 
     this.server.to(roomId).emit('receive-message', {
+      id: chat.id,
       user: {
         id: chat.user.id,
         name: chat.user.username,
-        avatar: chat.user.avatar
+        avatar: chat.user.avatar,
+        role: chat.user.avatar
       },
       message: chat.message,
       created_at: chat.created_at

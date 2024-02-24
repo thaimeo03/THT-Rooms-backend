@@ -66,11 +66,12 @@ export class RoomGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
     if (this.visited.has(client)) {
       const { myPeerId, roomId } = this.visited.get(client)
+
+      await this.roomsService.leaveRoom(this.visited.get(client).userId)
       this.handleLeaveRoom(client, {
         myPeerId,
         roomId
       })
-      await this.roomsService.leaveRoom(this.visited.get(client).userId)
     }
   }
 }

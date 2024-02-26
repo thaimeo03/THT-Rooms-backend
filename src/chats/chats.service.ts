@@ -38,6 +38,7 @@ export class ChatsService {
       await this.roomsService.findRoomById(roomId),
       await this.roomsService.findRoomByUserId(userId)
     ])
+
     if (!room || !roomByUser) throw new NotFoundException('Room not found')
     if (room.id !== roomByUser.id) throw new NotFoundException('User is not in a room')
 
@@ -57,9 +58,6 @@ export class ChatsService {
       where: {
         room: {
           id: roomId
-        },
-        user: {
-          id: userId
         }
       },
       relations: {

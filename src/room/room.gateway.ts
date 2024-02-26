@@ -44,9 +44,10 @@ export class RoomGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   }
 
   @SubscribeMessage('user-leave')
-  handleLeaveRoom(client: Socket, payload: IPayLoad) {
+  async handleLeaveRoom(client: Socket, payload: IPayLoad) {
     const { roomId, myPeerId } = payload
 
+    await this.roomsService.leaveRoom(this.visited.get(client).userId)
     this.visited.delete(client)
 
     client.join(roomId)
@@ -67,7 +68,6 @@ export class RoomGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     if (this.visited.has(client)) {
       const { myPeerId, roomId } = this.visited.get(client)
 
-      await this.roomsService.leaveRoom(this.visited.get(client).userId)
       this.handleLeaveRoom(client, {
         myPeerId,
         roomId

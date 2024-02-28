@@ -6,13 +6,16 @@ import { CreateRoomDto } from './dto/create-room.dto'
 import { Role } from 'common/enums/users.enum'
 import { UsersService } from 'src/users/users.service'
 import { JoinRoomDto } from './dto/join-room.dto'
+import { ChatsService } from 'src/chats/chats.service'
 
 @Injectable()
 export class RoomsService {
   constructor(
     @InjectRepository(Room) private readonly roomsService: Repository<Room>,
     @Inject(forwardRef(() => UsersService))
-    private readonly usersService: UsersService
+    private readonly usersService: UsersService,
+    @Inject(forwardRef(() => ChatsService))
+    private readonly chatsService: ChatsService
   ) {}
 
   async createRoom({
@@ -62,6 +65,19 @@ export class RoomsService {
     } catch (error) {
       throw error
     }
+  }
+
+  async deleteRoomById(roomId: string) {
+    const room = await this.findRoomById(roomId)
+    if (!room) {
+      throw new NotFoundException('Room not found')
+    }
+
+    await Promise.all([
+      await this.chatsService.deleteChatByRoomId(roomId),
+      await this.usersService.updateNullRoomOfUsers(roomId)
+    ])
+    await this.roomsService.delete({ id: roomId })
   }
 
   async deleteRoomsByHostId(hostUserId: string) {

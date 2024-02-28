@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import { Inject, Injectable, NotFoundException, forwardRef } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Chat } from 'database/entities/chat.entity'
 import { Repository } from 'typeorm'
@@ -10,7 +10,9 @@ import { UsersService } from 'src/users/users.service'
 export class ChatsService {
   constructor(
     @InjectRepository(Chat) private readonly chatsService: Repository<Chat>,
+    @Inject(forwardRef(() => RoomsService))
     private readonly roomsService: RoomsService,
+    @Inject(forwardRef(() => UsersService))
     private readonly usersService: UsersService
   ) {}
 
@@ -62,9 +64,20 @@ export class ChatsService {
       },
       relations: {
         user: true
+      },
+      order: {
+        created_at: 'DESC'
       }
     })
 
     return chats
+  }
+
+  async deleteChatByRoomId(roomId: string) {
+    await this.chatsService.delete({
+      room: {
+        id: roomId
+      }
+    })
   }
 }

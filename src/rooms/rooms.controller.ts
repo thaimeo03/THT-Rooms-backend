@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, Post, Req, UseGuards } from '@nestjs/common'
 import { Roles } from 'common/decorators/roles.decorator'
 import { Role } from 'common/enums/users.enum'
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard'
@@ -48,12 +48,12 @@ export class RoomsController {
     return new ResponseData({ message: 'Get rooms success', data: rooms })
   }
 
-  // @Get('leave')
-  // @UseGuards(JwtAuthGuard)
-  // @Roles(Role.HOST, Role.USER)
-  // async leaveRoom(@Req() req: Request) {
-  //   // Hard code
-  //   await this.roomsService.leaveRoom()
-  //   return new ResponseData({ message: 'Leave room success' })
-  // }
+  @Delete(':room_id')
+  @UseGuards(JwtAuthGuard)
+  @Roles(Role.HOST)
+  async deleteRoom(@Param('room_id') roomId: string) {
+    await this.roomsService.deleteRoomById(roomId)
+
+    return new ResponseData({ message: 'Delete room success' })
+  }
 }

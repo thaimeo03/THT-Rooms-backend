@@ -56,6 +56,11 @@ export class UsersService {
     return this.usersService.update(id, payload)
   }
 
+  async updateNullRoomOfUsers(roomId: string) {
+    const users = await this.findUsersByRoomId(roomId)
+    Promise.all(users.map((user) => this.updateUserById({ id: user.id, payload: { room: null } })))
+  }
+
   async findUserById(id: string, select?: FindOptionsSelect<User>) {
     return this.usersService.findOne({
       where: { id },
@@ -65,6 +70,10 @@ export class UsersService {
 
   async findUserByOAuthId(oauth_id: string) {
     return this.usersService.findOne({ where: { oauth_id } })
+  }
+
+  async findUsersByRoomId(roomId: string) {
+    return this.usersService.find({ where: { room: { id: roomId } } })
   }
 
   async findUserByEmail(email: string) {

@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { Room } from 'database/entities/room.entity'
 import { Repository } from 'typeorm'
 import { CreateRoomDto } from './dto/create-room.dto'
-import { Role } from 'common/enums/users.enum'
+import { ROLE } from 'common/enums/users.enum'
 import { UsersService } from 'src/users/users.service'
 import { JoinRoomDto } from './dto/join-room.dto'
 import { ChatsService } from 'src/chats/chats.service'
@@ -24,16 +24,16 @@ export class RoomsService {
     createRoomDto
   }: {
     userId: string
-    userRole: Role
+    userRole: ROLE
     createRoomDto: CreateRoomDto
   }) {
     try {
-      // Update role if role is USER (change to host)
-      if (userRole === Role.USER) {
+      // Update ROLE if ROLE is USER (change to host)
+      if (userRole === ROLE.USER) {
         await this.usersService.updateUserById({
           id: userId,
           payload: {
-            role: Role.HOST
+            role: ROLE.HOST
           }
         })
       }

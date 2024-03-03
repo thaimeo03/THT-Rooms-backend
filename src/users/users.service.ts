@@ -4,7 +4,7 @@ import { User } from 'database/entities/user.entity'
 import { FindOptionsSelect, Repository } from 'typeorm'
 import { LoginUserDto } from './dto/login-user.dto'
 import { RoomsService } from 'src/rooms/rooms.service'
-import { Role } from 'common/enums/users.enum'
+import { ROLE } from 'common/enums/users.enum'
 
 @Injectable()
 export class UsersService {
@@ -37,7 +37,7 @@ export class UsersService {
       email: true,
       avatar: true,
       updated_at: true,
-      role: true
+      roles: true
     })
   }
 
@@ -45,7 +45,7 @@ export class UsersService {
     try {
       Promise.all([
         await this.roomsService.deleteRoomsByHostId(id),
-        await this.updateUserById({ id, payload: { role: Role.USER } })
+        await this.updateUserById({ id, payload: { role: ROLE.USER } })
       ])
     } catch (error) {
       throw error

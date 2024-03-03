@@ -1,4 +1,4 @@
-import { Role } from 'common/enums/users.enum'
+import { ROLE } from 'common/enums/users.enum'
 import {
   Column,
   CreateDateColumn,
@@ -11,6 +11,7 @@ import {
 } from 'typeorm'
 import { Room } from './room.entity'
 import { Chat } from './chat.entity'
+import { Role } from './role.entity'
 
 @Entity()
 export class User {
@@ -34,13 +35,6 @@ export class User {
   })
   avatar: string
 
-  @Column({
-    type: 'enum',
-    enum: Role,
-    default: Role.USER
-  })
-  role: Role
-
   @Column({ nullable: true })
   refresh_token: string
 
@@ -55,4 +49,7 @@ export class User {
 
   @OneToMany(() => Chat, (chat) => chat.user)
   chats: Chat
+
+  @OneToMany(() => Role, (role) => role.user)
+  roles: Role[]
 }

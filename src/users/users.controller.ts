@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Patch, Req, Res, UseGuards } from '@nestjs/common'
 import { Roles } from 'common/decorators/roles.decorator'
-import { Role } from 'common/enums/users.enum'
+import { ROLE } from 'common/enums/users.enum'
 import { IJwtPayload } from 'common/strategies/jwt.strategy'
 import { Request, Response } from 'express'
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard'
@@ -13,7 +13,7 @@ export class UsersController {
 
   @Get('logout')
   @UseGuards(JwtAuthGuard)
-  @Roles(Role.HOST, Role.USER)
+  @Roles(ROLE.HOST, ROLE.USER)
   async logout(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
     const user = req.user as IJwtPayload
 
@@ -43,7 +43,7 @@ export class UsersController {
   // Handle later
   @Delete('leave-host')
   @UseGuards(JwtAuthGuard)
-  @Roles(Role.HOST)
+  @Roles(ROLE.HOST)
   async leaveHost(@Req() req: Request) {
     const user = req.user as IJwtPayload
     await this.usersService.leaveHost(user.id)

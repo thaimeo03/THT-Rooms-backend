@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { JwtService } from '@nestjs/jwt'
-import { Role } from 'common/enums/users.enum'
+import { ROLE } from 'common/enums/users.enum'
 import { User } from 'database/entities/user.entity'
 import { LoginUserDto } from 'src/users/dto/login-user.dto'
 import { UsersService } from 'src/users/users.service'
@@ -65,7 +65,7 @@ export class AuthService {
     return access_token
   }
 
-  async signAccessToken(payload: { id: string; role: Role }) {
+  async signAccessToken(payload: { id: string; role: ROLE }) {
     return await this.jwtService.signAsync(
       { ...payload, type: 'ACCESS_TOKEN' },
       {
@@ -75,7 +75,7 @@ export class AuthService {
     )
   }
 
-  async signRefreshToken(payload: { id: string; role: Role }) {
+  async signRefreshToken(payload: { id: string; role: ROLE }) {
     return await this.jwtService.signAsync(
       { ...payload, type: 'REFRESH_TOKEN' },
       {
@@ -85,7 +85,7 @@ export class AuthService {
     )
   }
 
-  async signAccessAndRefreshToken(payload: { id: string; role: Role }) {
+  async signAccessAndRefreshToken(payload: { id: string; role: ROLE }) {
     const [access_token, refresh_token] = await Promise.all([
       await this.signAccessToken(payload),
       await this.signRefreshToken(payload)

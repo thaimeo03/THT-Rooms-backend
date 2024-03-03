@@ -10,6 +10,7 @@ import { ChatGroupGateway } from './chat-group/chat-group.gateway'
 import { RoomGateway } from './room/room.gateway'
 import { ChatsService } from './chats/chats.service'
 import { ChatsModule } from './chats/chats.module'
+import { RolesModule } from './roles/roles.module';
 
 @Module({
   imports: [
@@ -20,7 +21,8 @@ import { ChatsModule } from './chats/chats.module'
     AuthModule,
     UsersModule,
     RoomsModule,
-    ChatsModule
+    ChatsModule,
+    RolesModule
   ],
   controllers: [],
   providers: [VideoGroupGateway, ChatGroupGateway, RoomGateway]

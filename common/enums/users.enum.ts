@@ -1,4 +1,4 @@
-export enum Role {
+export enum ROLE {
   USER = 'USER',
   HOST = 'HOST',
   BANNED = 'BANNED'

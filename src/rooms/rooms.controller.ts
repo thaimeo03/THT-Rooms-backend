@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Post, Req, UseGuards } from '@nestjs/common'
 import { Roles } from 'common/decorators/roles.decorator'
-import { Role } from 'common/enums/users.enum'
+import { ROLE } from 'common/enums/users.enum'
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard'
 import { Request } from 'express'
 import { IJwtPayload } from 'common/strategies/jwt.strategy'
@@ -29,7 +29,7 @@ export class RoomsController {
 
   @Post('join')
   @UseGuards(JwtAuthGuard)
-  @Roles(Role.HOST, Role.USER)
+  @Roles(ROLE.HOST, ROLE.USER)
   async joinRoom(@Req() req: Request, @Body() joinRoomDto: JoinRoomDto) {
     const user = req.user as IJwtPayload
     await this.roomsService.joinRoom({
@@ -50,7 +50,7 @@ export class RoomsController {
 
   @Delete(':room_id')
   @UseGuards(JwtAuthGuard)
-  @Roles(Role.HOST)
+  @Roles(ROLE.HOST)
   async deleteRoom(@Param('room_id') roomId: string) {
     await this.roomsService.deleteRoomById(roomId)
 

@@ -40,17 +40,6 @@ export class UsersService {
     })
   }
 
-  // async leaveHost(id: string) {
-  //   try {
-  //     Promise.all([
-  //       await this.roomsService.deleteRoomsByHostId(id),
-  //       await this.updateUserById({ id, payload: { role: ROLE.USER } })
-  //     ])
-  //   } catch (error) {
-  //     throw error
-  //   }
-  // }
-
   async updateUserById({ id, payload }: { id: string; payload: Partial<User> }) {
     return this.usersService.update(id, payload)
   }

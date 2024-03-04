@@ -7,6 +7,7 @@ import { ROLE } from 'common/enums/users.enum'
 import { UsersService } from 'src/users/users.service'
 import { JoinRoomDto } from './dto/join-room.dto'
 import { ChatsService } from 'src/chats/chats.service'
+import { RolesService } from 'src/roles/roles.service'
 
 @Injectable()
 export class RoomsService {
@@ -15,32 +16,28 @@ export class RoomsService {
     @Inject(forwardRef(() => UsersService))
     private readonly usersService: UsersService,
     @Inject(forwardRef(() => ChatsService))
-    private readonly chatsService: ChatsService
+    private readonly chatsService: ChatsService,
+    private readonly rolesService: RolesService
   ) {}
 
-  async createRoom({
-    userId,
-    userRole,
-    createRoomDto
-  }: {
-    userId: string
-    userRole: ROLE
-    createRoomDto: CreateRoomDto
-  }) {
+  async createRoom({ userId, createRoomDto }: { userId: string; createRoomDto: CreateRoomDto }) {
     try {
-      // Update ROLE if ROLE is USER (change to host)
-      if (userRole === ROLE.USER) {
-        await this.usersService.updateUserById({
-          id: userId,
-          payload: {
-            role: ROLE.HOST
-          }
-        })
-      }
       // Save room
-      const room = await this.roomsService.save({
-        ...createRoomDto,
-        host_user_id: userId
+      const [user, room] = await Promise.all([
+        this.usersService.findUserById(userId),
+        this.roomsService.save({
+          ...createRoomDto,
+          host_user_id: userId
+        })
+      ])
+
+      // Add role host
+      await this.rolesService.createRole({
+        user,
+        createRoleDto: {
+          name: ROLE.HOST,
+          room_id: room.id
+        }
       })
 
       return room
@@ -75,7 +72,8 @@ export class RoomsService {
 
     await Promise.all([
       await this.chatsService.deleteChatByRoomId(roomId),
-      await this.usersService.updateNullRoomOfUsers(roomId)
+      await this.usersService.updateNullRoomOfUsers(roomId),
+      await this.rolesService.deleteRoleByRoomId(roomId)
     ])
     await this.roomsService.delete({ id: roomId })
   }

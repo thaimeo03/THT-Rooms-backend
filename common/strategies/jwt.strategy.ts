@@ -7,7 +7,6 @@ import { ROLE } from 'common/enums/users.enum'
 
 export interface IJwtPayload {
   id: string
-  role: ROLE
   type: string
   iat: number
   exp: number

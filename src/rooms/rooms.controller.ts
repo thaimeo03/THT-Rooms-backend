@@ -20,7 +20,6 @@ export class RoomsController {
 
     const room = await this.roomsService.createRoom({
       userId: user.id,
-      userRole: user.role,
       createRoomDto
     })
 
@@ -29,7 +28,6 @@ export class RoomsController {
 
   @Post('join')
   @UseGuards(JwtAuthGuard)
-  @Roles(ROLE.HOST, ROLE.USER)
   async joinRoom(@Req() req: Request, @Body() joinRoomDto: JoinRoomDto) {
     const user = req.user as IJwtPayload
     await this.roomsService.joinRoom({
@@ -50,7 +48,6 @@ export class RoomsController {
 
   @Delete(':room_id')
   @UseGuards(JwtAuthGuard)
-  @Roles(ROLE.HOST)
   async deleteRoom(@Param('room_id') roomId: string) {
     await this.roomsService.deleteRoomById(roomId)
 

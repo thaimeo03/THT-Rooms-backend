@@ -13,7 +13,6 @@ export class UsersController {
 
   @Get('logout')
   @UseGuards(JwtAuthGuard)
-  @Roles(ROLE.HOST, ROLE.USER)
   async logout(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
     const user = req.user as IJwtPayload
 
@@ -39,14 +38,4 @@ export class UsersController {
 
     return new ResponseData({ message: 'Get profile success', data: res })
   }
-
-  // Handle later
-  // @Delete('leave-host')
-  // @UseGuards(JwtAuthGuard)
-  // @Roles(ROLE.HOST)
-  // async leaveHost(@Req() req: Request) {
-  //   const user = req.user as IJwtPayload
-  //   await this.usersService.leaveHost(user.id)
-  //   return new ResponseData({ message: 'Leave host success' })
-  // }
 }

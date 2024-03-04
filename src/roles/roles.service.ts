@@ -26,6 +26,17 @@ export class RolesService {
     })
   }
 
+  async findRoleByRoomIdAndUserId({ roomId, userId }: { roomId: string; userId: string }) {
+    return await this.rolesService.findOne({
+      where: {
+        room_id: roomId,
+        user: {
+          id: userId
+        }
+      }
+    })
+  }
+
   async isVerified({ user, roleNames }: { user: User; roleNames: string[] }) {
     const role = await this.findRoleByUser(user)
 
@@ -34,5 +45,9 @@ export class RolesService {
     }
 
     return roleNames.includes(role.name)
+  }
+
+  async deleteRoleByRoomId(roomId: string) {
+    return await this.rolesService.delete({ room_id: roomId })
   }
 }

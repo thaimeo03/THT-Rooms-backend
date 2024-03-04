@@ -52,8 +52,7 @@ export class ChatsService {
         user: {
           id: true,
           username: true,
-          avatar: true,
-          role: true
+          avatar: true
         },
         created_at: true
       },

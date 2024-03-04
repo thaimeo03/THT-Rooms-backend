@@ -10,19 +10,29 @@ export class RolesService {
   constructor(@InjectRepository(Role) private readonly rolesService: Repository<Role>) {}
 
   async createRole({ user, createRoleDto }: { user: User; createRoleDto: CreateRoleDto }) {
-    const roleExist = await this.findRoleByName(user)
+    const roleExist = await this.findRoleByUser(user)
     if (!roleExist) {
-      return await this.rolesService.save({ name: createRoleDto.name, user: user })
+      return await this.rolesService.save({ ...createRoleDto, user: user })
     } else {
       return roleExist
     }
   }
 
-  async findRoleByName(user: User) {
+  async findRoleByUser(user: User) {
     return await this.rolesService.findOne({
       where: {
         user: user
       }
     })
+  }
+
+  async isVerified({ user, roleNames }: { user: User; roleNames: string[] }) {
+    const role = await this.findRoleByUser(user)
+
+    if (!role) {
+      return false
+    }
+
+    return roleNames.includes(role.name)
   }
 }

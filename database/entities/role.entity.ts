@@ -14,9 +14,6 @@ export class Role {
   })
   name: string
 
-  @Column({
-    nullable: true
-  })
   room_id: string
 
   @CreateDateColumn()

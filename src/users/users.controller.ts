@@ -41,12 +41,12 @@ export class UsersController {
   }
 
   // Handle later
-  @Delete('leave-host')
-  @UseGuards(JwtAuthGuard)
-  @Roles(ROLE.HOST)
-  async leaveHost(@Req() req: Request) {
-    const user = req.user as IJwtPayload
-    await this.usersService.leaveHost(user.id)
-    return new ResponseData({ message: 'Leave host success' })
-  }
+  // @Delete('leave-host')
+  // @UseGuards(JwtAuthGuard)
+  // @Roles(ROLE.HOST)
+  // async leaveHost(@Req() req: Request) {
+  //   const user = req.user as IJwtPayload
+  //   await this.usersService.leaveHost(user.id)
+  //   return new ResponseData({ message: 'Leave host success' })
+  // }
 }

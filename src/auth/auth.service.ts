@@ -16,7 +16,7 @@ export class AuthService {
 
   async register(user: LoginUserDto) {
     const newUser = await this.usersService.createUser(user)
-    const { access_token, refresh_token } = await this.signAccessAndRefreshToken({ id: newUser.id, role: newUser.role })
+    const { access_token, refresh_token } = await this.signAccessAndRefreshToken({ id: newUser.id })
 
     // Save refresh_token in DB
     await this.usersService.updateUser({ id: newUser.id, refresh_token })
@@ -26,8 +26,7 @@ export class AuthService {
 
   async login(userExist: User) {
     const { access_token, refresh_token } = await this.signAccessAndRefreshToken({
-      id: userExist.id,
-      role: userExist.role
+      id: userExist.id
     })
 
     // Update refresh_token in DB
@@ -60,12 +59,12 @@ export class AuthService {
       throw new UnauthorizedException()
     }
 
-    const access_token = await this.signAccessToken({ id: userExist.id, role: userExist.role })
+    const access_token = await this.signAccessToken({ id: userExist.id })
 
     return access_token
   }
 
-  async signAccessToken(payload: { id: string; role: ROLE }) {
+  async signAccessToken(payload: { id: string }) {
     return await this.jwtService.signAsync(
       { ...payload, type: 'ACCESS_TOKEN' },
       {
@@ -75,7 +74,7 @@ export class AuthService {
     )
   }
 
-  async signRefreshToken(payload: { id: string; role: ROLE }) {
+  async signRefreshToken(payload: { id: string }) {
     return await this.jwtService.signAsync(
       { ...payload, type: 'REFRESH_TOKEN' },
       {
@@ -85,7 +84,7 @@ export class AuthService {
     )
   }
 
-  async signAccessAndRefreshToken(payload: { id: string; role: ROLE }) {
+  async signAccessAndRefreshToken(payload: { id: string }) {
     const [access_token, refresh_token] = await Promise.all([
       await this.signAccessToken(payload),
       await this.signRefreshToken(payload)

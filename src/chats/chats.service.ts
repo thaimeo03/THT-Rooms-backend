@@ -5,6 +5,7 @@ import { Repository } from 'typeorm'
 import { CreateChatDto } from './dto/create-chat.dto'
 import { RoomsService } from 'src/rooms/rooms.service'
 import { UsersService } from 'src/users/users.service'
+import { RolesService } from 'src/roles/roles.service'
 
 @Injectable()
 export class ChatsService {
@@ -13,7 +14,8 @@ export class ChatsService {
     @Inject(forwardRef(() => RoomsService))
     private readonly roomsService: RoomsService,
     @Inject(forwardRef(() => UsersService))
-    private readonly usersService: UsersService
+    private readonly usersService: UsersService,
+    private readonly rolesService: RolesService
   ) {}
 
   async createChat({ userId, createChatDto }: { userId: string; createChatDto: CreateChatDto }) {
@@ -45,29 +47,38 @@ export class ChatsService {
     if (room.id !== roomByUser.id) throw new NotFoundException('User is not in a room')
 
     // Join room -> user -> chat
-    const chats = await this.chatsService.find({
-      select: {
-        id: true,
-        message: true,
-        user: {
-          id: true,
-          username: true,
-          avatar: true
-        },
-        created_at: true
-      },
-      where: {
-        room: {
-          id: roomId
-        }
-      },
-      relations: {
-        user: true
-      },
-      order: {
-        created_at: 'DESC'
-      }
-    })
+    // const chats = await this.chatsService.find({
+    //   select: {
+    //     id: true,
+    //     message: true,
+    //     user: {
+    //       id: true,
+    //       username: true,
+    //       avatar: true
+    //     },
+    //     created_at: true
+    //   },
+    //   where: {
+    //     room: {
+    //       id: roomId
+    //     }
+    //   },
+    //   relations: {
+    //     user: {
+    //       roles: true
+    //     }
+    //   },
+    //   order: {
+    //     created_at: 'DESC'
+    //   }
+    // })
+    const chats = this.chatsService
+      .createQueryBuilder('chat')
+      .leftJoinAndSelect('chat.user', 'user')
+      .leftJoinAndSelect('user.roles', 'role')
+      .where('chat.roomId = :roomId', { roomId })
+      .orderBy('chat.created_at', 'DESC')
+      .getMany()
 
     return chats
   }

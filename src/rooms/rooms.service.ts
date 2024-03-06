@@ -72,8 +72,8 @@ export class RoomsService {
 
     await Promise.all([
       await this.chatsService.deleteChatByRoomId(roomId),
-      await this.usersService.updateNullRoomOfUsers(roomId),
-      await this.rolesService.deleteRoleByRoomId(roomId)
+      await this.usersService.updateNullRoomOfUsers(roomId)
+      // await this.rolesService.deleteRoleByRoomId(roomId)
     ])
     await this.roomsService.delete({ id: roomId })
   }

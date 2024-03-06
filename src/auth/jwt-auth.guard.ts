@@ -3,6 +3,7 @@ import { Reflector } from '@nestjs/core'
 import { AuthGuard } from '@nestjs/passport'
 import { ROLES_KEY } from 'common/decorators/ROLEs.decorator'
 import { ROLE } from 'common/enums/users.enum'
+import { Request } from 'express'
 import { RolesService } from 'src/roles/roles.service'
 
 @Injectable()
@@ -29,9 +30,10 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     }
 
     // Check role user
-    if (!this.rolesService.isVerified({ user, roleNames: requiredRoles })) {
-      throw new ForbiddenException()
-    }
+    // const request = context.switchToHttp().getRequest() as Request
+    // if (!this.rolesService.isVerified({ user, roleNames: requiredRoles })) {
+    //   throw new ForbiddenException()
+    // }
 
     return user
   }

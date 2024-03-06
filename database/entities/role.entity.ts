@@ -14,6 +14,7 @@ export class Role {
   })
   name: string
 
+  @Column()
   room_id: string
 
   @CreateDateColumn()

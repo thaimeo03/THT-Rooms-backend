@@ -48,6 +48,8 @@ export class RolesService {
   }
 
   async deleteRoleByRoomId(roomId: string) {
-    return await this.rolesService.delete({ room_id: roomId })
+    return this.rolesService.delete({
+      room_id: roomId
+    })
   }
 }

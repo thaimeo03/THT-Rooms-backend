@@ -48,9 +48,23 @@ export class RoomsService {
 
   async joinRoom({ userId, joinRoomDto }: { userId: string; joinRoomDto: JoinRoomDto }) {
     try {
-      // Check room exists
-      const room = await this.roomsService.findOneBy({ id: joinRoomDto.room_id })
+      // Check room and role exists
+      const [room, role, user] = await Promise.all([
+        this.roomsService.findOneBy({ id: joinRoomDto.room_id }),
+        this.rolesService.findRoleByRoomIdAndUserId({ roomId: joinRoomDto.room_id, userId }),
+        this.usersService.findUserById(userId)
+      ])
       if (!room) throw new NotFoundException('Room not found')
+      // Assign role if not exists, default is role user
+      if (!role) {
+        await this.rolesService.createRole({
+          user,
+          createRoleDto: {
+            name: ROLE.USER,
+            room_id: joinRoomDto.room_id
+          }
+        })
+      }
 
       // Update relationship
       await this.usersService.updateUserById({

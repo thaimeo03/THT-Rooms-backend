@@ -28,6 +28,11 @@ export class RolesService {
 
   async findRoleByRoomIdAndUserId({ roomId, userId }: { roomId: string; userId: string }) {
     return await this.rolesService.findOne({
+      select: {
+        id: true,
+        name: true,
+        room_id: true
+      },
       where: {
         room_id: roomId,
         user: {

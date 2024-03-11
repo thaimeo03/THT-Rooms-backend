@@ -1,9 +1,12 @@
-import { Controller, Get, Param, Req, UseGuards } from '@nestjs/common'
+import { Controller, Get, Param, Put, Req, UseGuards } from '@nestjs/common'
 import { RolesService } from './roles.service'
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard'
 import { Request } from 'express'
 import { IJwtPayload } from 'common/strategies/jwt.strategy'
 import { ResponseData } from 'common/customs/response-data'
+import { RolesGuard } from 'src/auth/role.guard'
+import { Roles } from 'common/decorators/roles.decorator'
+import { ROLE } from 'common/enums/users.enum'
 
 @Controller('roles')
 export class RolesController {
@@ -19,5 +22,12 @@ export class RolesController {
       message: 'Get role success',
       data: role
     })
+  }
+
+  @Put(':room_id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(ROLE.HOST)
+  async changeUserRole(@Req() req: Request) {
+    return 'Oke'
   }
 }

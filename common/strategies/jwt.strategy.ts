@@ -3,7 +3,6 @@ import { PassportStrategy } from '@nestjs/passport'
 import { ExtractJwt, Strategy } from 'passport-jwt'
 import { Request } from 'express'
 import 'dotenv/config'
-import { ROLE } from 'common/enums/users.enum'
 
 export interface IJwtPayload {
   id: string

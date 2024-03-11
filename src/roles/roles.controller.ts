@@ -13,6 +13,7 @@ export class RolesController {
   @UseGuards(JwtAuthGuard)
   async getRole(@Param('room_id') room_id: string, @Req() req: Request) {
     const user = req.user as IJwtPayload
+
     const role = await this.rolesService.findRoleByRoomIdAndUserId({ roomId: room_id, userId: user.id })
     return new ResponseData({
       message: 'Get role success',

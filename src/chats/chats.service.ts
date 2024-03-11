@@ -46,38 +46,12 @@ export class ChatsService {
     if (!room || !roomByUser) throw new NotFoundException('Room not found')
     if (room.id !== roomByUser.id) throw new NotFoundException('User is not in a room')
 
-    // Join room -> user -> chat
-    // const chats = await this.chatsService.find({
-    //   select: {
-    //     id: true,
-    //     message: true,
-    //     user: {
-    //       id: true,
-    //       username: true,
-    //       avatar: true
-    //     },
-    //     created_at: true
-    //   },
-    //   where: {
-    //     room: {
-    //       id: roomId
-    //     }
-    //   },
-    //   relations: {
-    //     user: {
-    //       roles: true
-    //     }
-    //   },
-    //   order: {
-    //     created_at: 'DESC'
-    //   }
-    // })
-    const chats = this.chatsService
+    const chats = await this.chatsService
       .createQueryBuilder('chat')
       .leftJoinAndSelect('chat.user', 'user')
       .leftJoinAndSelect('user.roles', 'role')
       .where('chat.roomId = :roomId', { roomId })
-      .orderBy('chat.created_at', 'DESC')
+      .orderBy('chat.created_at', 'ASC')
       .getMany()
 
     return chats

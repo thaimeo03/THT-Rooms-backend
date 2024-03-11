@@ -1,13 +1,13 @@
 import { SubscribeMessage, WebSocketGateway } from '@nestjs/websockets'
-import { Server, Socket } from 'socket.io'
-import { IPayLoad, RoomGateway } from 'src/room/room.gateway'
+import { Socket } from 'socket.io'
+import { IPayLoad } from 'src/room/room.gateway'
 
 @WebSocketGateway({
   cors: {
     origin: '*'
   }
 })
-export class VideoGroupGateway extends RoomGateway {
+export class VideoGroupGateway {
   @SubscribeMessage('user-toggle-audio')
   handleToggleAudio(client: Socket, payload: IPayLoad) {
     const { roomId, myPeerId } = payload

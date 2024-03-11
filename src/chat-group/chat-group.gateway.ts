@@ -39,7 +39,7 @@ export class ChatGroupGateway extends RoomGateway {
       id: chat.id,
       user: {
         id: chat.user.id,
-        name: chat.user.username,
+        username: chat.user.username,
         avatar: chat.user.avatar,
         role: role.name
       },

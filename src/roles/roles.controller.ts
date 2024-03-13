@@ -4,7 +4,7 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard'
 import { Request } from 'express'
 import { IJwtPayload } from 'common/strategies/jwt.strategy'
 import { ResponseData } from 'common/customs/response-data'
-import { RolesGuard } from 'src/auth/role.guard'
+import { RolesGuard } from 'src/roles/role.guard'
 import { Roles } from 'common/decorators/roles.decorator'
 import { ROLE } from 'common/enums/users.enum'
 
@@ -18,6 +18,7 @@ export class RolesController {
     const user = req.user as IJwtPayload
 
     const role = await this.rolesService.findRoleByRoomIdAndUserId({ roomId: room_id, userId: user.id })
+
     return new ResponseData({
       message: 'Get role success',
       data: role

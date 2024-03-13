@@ -1,6 +1,15 @@
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn
+} from 'typeorm'
 import { User } from './user.entity'
 import { Chat } from './chat.entity'
+import { RoomState } from './room-state.entity'
 
 @Entity()
 export class Room {
@@ -27,4 +36,7 @@ export class Room {
 
   @OneToMany(() => Chat, (chat) => chat.room)
   chats: Chat[]
+
+  @OneToOne(() => RoomState, (roomState) => roomState.room)
+  state: RoomState
 }

@@ -2,7 +2,7 @@ import { SubscribeMessage, WebSocketGateway } from '@nestjs/websockets'
 import { Socket } from 'socket.io'
 import { ChatsService } from 'src/chats/chats.service'
 import { RolesService } from 'src/roles/roles.service'
-import { RoomGateway } from 'src/room/room.gateway'
+import { RoomGateway } from 'src/rooms/room.gateway'
 import { RoomsService } from 'src/rooms/rooms.service'
 
 interface IMessage {

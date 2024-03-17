@@ -1,4 +1,4 @@
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm'
 import { Room } from './room.entity'
 
 @Entity()
@@ -16,6 +16,7 @@ export class RoomState {
   })
   chat_active: boolean
 
-  @OneToOne(() => Room, (room) => room.state)
+  @OneToOne(() => Room)
+  @JoinColumn()
   room: Room
 }

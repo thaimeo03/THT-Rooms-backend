@@ -1,3 +1,4 @@
+import { UseGuards } from '@nestjs/common'
 import {
   OnGatewayConnection,
   OnGatewayDisconnect,

@@ -1,4 +1,5 @@
 import {
+  AfterInsert,
   Column,
   CreateDateColumn,
   Entity,
@@ -36,7 +37,4 @@ export class Room {
 
   @OneToMany(() => Chat, (chat) => chat.room)
   chats: Chat[]
-
-  @OneToOne(() => RoomState, (roomState) => roomState.room)
-  state: RoomState
 }

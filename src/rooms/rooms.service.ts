@@ -8,16 +8,22 @@ import { UsersService } from 'src/users/users.service'
 import { JoinRoomDto } from './dto/join-room.dto'
 import { ChatsService } from 'src/chats/chats.service'
 import { RolesService } from 'src/roles/roles.service'
+import { RoomStatesService } from 'src/room-states/room-states.service'
 
 @Injectable()
 export class RoomsService {
   constructor(
     @InjectRepository(Room) private readonly roomsService: Repository<Room>,
+
     @Inject(forwardRef(() => UsersService))
     private readonly usersService: UsersService,
+
     @Inject(forwardRef(() => ChatsService))
     private readonly chatsService: ChatsService,
-    private readonly rolesService: RolesService
+
+    private readonly rolesService: RolesService,
+
+    private readonly roomStatesService: RoomStatesService
   ) {}
 
   async createRoom({ userId, createRoomDto }: { userId: string; createRoomDto: CreateRoomDto }) {
@@ -31,14 +37,17 @@ export class RoomsService {
         })
       ])
 
-      // Add role host
-      await this.rolesService.createRole({
-        user,
-        createRoleDto: {
-          name: ROLE.HOST,
-          room_id: room.id
-        }
-      })
+      // Add role host and update room state
+      await Promise.all([
+        this.rolesService.createRole({
+          user,
+          createRoleDto: {
+            name: ROLE.HOST,
+            room_id: room.id
+          }
+        }),
+        this.roomStatesService.createRoomState({ room: room })
+      ])
 
       return room
     } catch (error) {
@@ -49,12 +58,16 @@ export class RoomsService {
   async joinRoom({ userId, joinRoomDto }: { userId: string; joinRoomDto: JoinRoomDto }) {
     try {
       // Check room and role exists
-      const [room, role, user] = await Promise.all([
+      const [room, role, user, roomState] = await Promise.all([
         this.roomsService.findOneBy({ id: joinRoomDto.room_id }),
         this.rolesService.findRoleByRoomIdAndUserId({ roomId: joinRoomDto.room_id, userId }),
-        this.usersService.findUserById(userId)
+        this.usersService.findUserById(userId),
+        this.roomStatesService.findRoomStateByRoomId(joinRoomDto.room_id)
       ])
+
       if (!room) throw new NotFoundException('Room not found')
+      if (!roomState.public) throw new NotFoundException('Room is private')
+
       // Assign role if not exists, default is role user
       if (!role) {
         await this.rolesService.createRole({
@@ -86,7 +99,8 @@ export class RoomsService {
 
     await Promise.all([
       await this.chatsService.deleteChatByRoomId(roomId),
-      await this.usersService.updateNullRoomOfUsers(roomId)
+      await this.usersService.updateNullRoomOfUsers(roomId),
+      await this.roomStatesService.deleteRoomStateByRoomId(roomId)
       // await this.rolesService.deleteRoleByRoomId(roomId)
     ])
     await this.roomsService.delete({ id: roomId })

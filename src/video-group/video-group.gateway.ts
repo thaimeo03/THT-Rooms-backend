@@ -1,6 +1,6 @@
 import { SubscribeMessage, WebSocketGateway } from '@nestjs/websockets'
 import { Socket } from 'socket.io'
-import { IPayLoad } from 'src/room/room.gateway'
+import { IPayLoad } from 'src/rooms/room.gateway'
 
 @WebSocketGateway({
   cors: {

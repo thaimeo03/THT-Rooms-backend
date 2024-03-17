@@ -6,11 +6,11 @@ import { dataSourceOptions } from 'database/data-source'
 import { AuthModule } from './auth/auth.module'
 import { RoomsModule } from './rooms/rooms.module'
 import { VideoGroupGateway } from './video-group/video-group.gateway'
-import { ChatGroupGateway } from './chat-group/chat-group.gateway'
-import { RoomGateway } from './room/room.gateway'
-import { ChatsService } from './chats/chats.service'
+import { ChatGroupGateway } from './chats/chat-group.gateway'
+import { RoomGateway } from './rooms/room.gateway'
 import { ChatsModule } from './chats/chats.module'
-import { RolesModule } from './roles/roles.module';
+import { RolesModule } from './roles/roles.module'
+import { RoomStatesModule } from './room-states/room-states.module'
 
 @Module({
   imports: [
@@ -22,7 +22,8 @@ import { RolesModule } from './roles/roles.module';
     UsersModule,
     RoomsModule,
     ChatsModule,
-    RolesModule
+    RolesModule,
+    RoomStatesModule
   ],
   controllers: [],
   providers: [VideoGroupGateway, ChatGroupGateway, RoomGateway]

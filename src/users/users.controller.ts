@@ -30,7 +30,7 @@ export class UsersController {
   }
 
   @Get('profile')
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   async getProfile(@Req() req: Request) {
     console.log('Get profile::1')
     const user = req.user as IJwtPayload

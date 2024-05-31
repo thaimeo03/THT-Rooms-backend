@@ -14,6 +14,7 @@ export interface IJwtPayload {
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor() {
+    console.log('JwtStrategy::1')
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         JwtStrategy.extractJwtFromCookie,

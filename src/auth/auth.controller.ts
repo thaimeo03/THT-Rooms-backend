@@ -18,13 +18,17 @@ export class AuthController {
 
   @Get('google')
   @UseGuards(GoogleGuard)
-  googleAuth() {}
+  googleAuth() {
+    console.log('Google Auth::1')
+  }
 
   @Get('google/redirect')
   @UseGuards(GoogleGuard)
   async googleAuthRedirect(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
     const user = req.user as LoginUserDto
     const { access_token, refresh_token } = await this.authService.oauthLogin(user)
+
+    console.log('Google Auth::2' + access_token)
 
     res.cookie('access_token', access_token, {
       httpOnly: true
